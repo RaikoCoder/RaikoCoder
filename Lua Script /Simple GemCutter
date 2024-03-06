@@ -1,12 +1,16 @@
---[[  SETTINGs
-USE AT Grand Exchange (change Preset and KeyboardPress2 to whatever your using)
-put Uncut into your Ability bar
-Start Full inventory / None  ]]
-
 print("Script started, Crafting uncut gems")
 local API = require("api")
 local UTILS = require("utils")
 local player = API.GetLocalPlayerName()
+
+--[[
+SETTING
+
+USE AT Grand Exchange (change Preset and KeyboardPress2 to whatever your using)
+put Uncut into your Ability bar
+Start Full inventory / None
+
+]]
 ------GUI------
 local startTime = os.time()
 MAX_IDLE_TIME_MINUTES = 8
@@ -23,7 +27,7 @@ local cra =  { --LEVELS
     onyx = 6571, --72
     hydrix = 31853 --79
 }
-   local IDcraft = cra.dragonstone --Change to gems ur cutting
+   local IDcraft = cra.dragonstone
    local preset = 5
 
 local startXp = API.GetSkillXP("CRAFTING")
@@ -76,7 +80,7 @@ local function checkbank()
 
     for k, v in pairs(items) do
         if v.itemid1 == IDcraft then
-            --print("Found: " .. v.itemid1_size .. " uncut gem.")
+            --print("Found: " .. v.itemid1_size .. " Raw gem.")
             UncutGemsBanked = v.itemid1_size -- Update the count of gems banked
         end
     end
@@ -149,9 +153,10 @@ end
 
 
 local function craft()
-        if not API.IsPlayerAnimating_(player, 40) then
+        if not API.IsPlayerAnimating_(player, 40) and API.isProcessing() ==false then
 
-        API.DoAction_Ability("Uncut dragonstone", 1, API.OFF_ACT_GeneralInterface_route) --change name for the uncut
+            API.DoAction_Ability("Uncut dragonstone", 1, API.OFF_ACT_GeneralInterface_route)
+        ---API.DoAction_Interface(0x2e,0x651,1,1430,142,-1,API.OFF_ACT_GeneralInterface_route) -- change name for uncuts
         UTILS.randomSleep(1800)
         API.DoAction_Interface(0xffffffff,0xffffffff,0,1370,30,-1,API.OFF_ACT_GeneralInterface_Choose_option) -- craft
         end
@@ -198,6 +203,7 @@ do------------------------------------------------------------------------------
     checkForXPDrop()
     if API.InvItemFound1(IDcraft) == false then 
         BankDia()
+        
     end
     craft()
     printProgressReport()
